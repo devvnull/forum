@@ -1,0 +1,16 @@
+spring.application.name=user
+
+spring.datasource.url=jdbc:postgresql://postgres:5432/database
+spring.datasource.username=username
+spring.datasource.password=pass
+spring.datasource.driver-class-name=org.postgresql.Driver
+
+spring.jpa.hibernate.ddl-auto=update
+
+spring.liquibase.change-log=classpath:db/changelog/db.changelog-master.xml
+spring.liquibase.enabled=true
+
+spring.messages.basename=validation-messages
+
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.format_sql=true
