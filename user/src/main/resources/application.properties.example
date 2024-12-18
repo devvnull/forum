@@ -14,3 +14,6 @@ spring.messages.basename=validation-messages
 
 spring.jpa.show-sql=true
 spring.jpa.properties.hibernate.format_sql=true
+
+jwt.secret=your_secret_key
+jwt.expiration=3600000

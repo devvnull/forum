@@ -18,4 +18,5 @@ The format is based on [Semantic Versioning](https://semver.org/).
 ## [0.0.0] - 2024-00-00
 
 ### Added
-- feat(signup): Added create user endpoint.
+- feat(auth): Added login endpoint.
+- feat(auth): Added create user endpoint.

@@ -8,7 +8,13 @@ import com.user.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
@@ -17,7 +23,19 @@ public class AuthController {
     private UserService userService;
 
     @PostMapping("/login")
-    public void login(@Valid @RequestBody LoginRequest request) {}
+    public Map<String, String>  login(@Valid @RequestBody LoginRequest request) {
+        User user = userService.findByUsername(request.getUsername());
+
+        if (user == null || !this.userService.verifyPassword(request.getPassword(), user)) {
+            throw new RuntimeException("Invalid username or password");
+        }
+
+        String token = userService.verify(request.getUsername(), request.getPassword());
+
+        Map<String, String> response = new HashMap<>();
+        response.put("token", token);
+        return response;
+    }
 
     @PostMapping("/signup")
     public ResponseEntity<UserResponse> signUp(@Valid @RequestBody SignUpRequest request) {
@@ -33,7 +51,4 @@ public class AuthController {
 
     @PostMapping("/logout")
     public void logout() {}
-
-    @PostMapping("/refresh-token")
-    public void refreshToken() {}
 }
