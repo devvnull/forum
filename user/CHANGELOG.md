@@ -18,5 +18,6 @@ The format is based on [Semantic Versioning](https://semver.org/).
 ## [0.0.0] - 2024-00-00
 
 ### Added
+- feat(code-style): Added `spotless` plugin for code formatting.
 - feat(auth): Added login endpoint.
 - feat(auth): Added create user endpoint.
