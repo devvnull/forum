@@ -2,6 +2,8 @@ package com.user.service;
 
 import com.user.entity.User;
 import com.user.repository.UserRepository;
+import java.util.Optional;
+import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -29,6 +31,10 @@ public class UserService {
     return userRepository.findByUsername(username);
   }
 
+  public Optional<User> findById(UUID id) {
+    return userRepository.findById(id);
+  }
+
   public boolean existsByUsername(String username) {
     return this.userRepository.findByUsername(username) != null;
   }
@@ -37,11 +43,12 @@ public class UserService {
     return this.passwordEncoder.matches(plainPassword, user.getPassword());
   }
 
-  public String verify(String username, String password) {
+  public String verify(User user, String plainPassword) {
     Authentication authentication =
-        authManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
+        authManager.authenticate(
+            new UsernamePasswordAuthenticationToken(user.getUsername(), plainPassword));
     if (authentication.isAuthenticated()) {
-      return jwtService.generateAccessToken(username);
+      return jwtService.generateAccessToken(user);
     } else {
       throw new RuntimeException("Could not verify token");
     }

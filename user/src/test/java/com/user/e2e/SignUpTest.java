@@ -73,9 +73,7 @@ public class SignUpTest {
         .andExpect(status().isBadRequest())
         .andExpect(
             jsonPath("$.errors")
-                .value(
-                    org.hamcrest.Matchers.hasItem(
-                        "Username must be within 5 and 50 characters long")))
+                .value(org.hamcrest.Matchers.hasItem("Username must be within 5 and 50 characters long")))
         .andReturn();
 
     // size fits, error is not shown anymore
@@ -84,8 +82,7 @@ public class SignUpTest {
         .andExpect(status().isBadRequest())
         .andExpect(
             jsonPath("$.errors")
-                .value(
-                    org.hamcrest.Matchers.not("Username must be within 5 and 50 characters long")))
+                .value(org.hamcrest.Matchers.not("Username must be within 5 and 50 characters long")))
         .andReturn();
   }
 
@@ -133,9 +130,7 @@ public class SignUpTest {
         .andExpect(status().isBadRequest())
         .andExpect(
             jsonPath("$.errors")
-                .value(
-                    org.hamcrest.Matchers.hasItem(
-                        "Password must be within 8 and 250 characters long")))
+                .value(org.hamcrest.Matchers.hasItem("Password must be within 8 and 250 characters long")))
         .andReturn();
 
     signUpRequest.setPassword("p".repeat(251));
@@ -147,9 +142,7 @@ public class SignUpTest {
         .andExpect(status().isBadRequest())
         .andExpect(
             jsonPath("$.errors")
-                .value(
-                    org.hamcrest.Matchers.hasItem(
-                        "Password must be within 8 and 250 characters long")))
+                .value(org.hamcrest.Matchers.hasItem("Password must be within 8 and 250 characters long")))
         .andReturn();
 
     signUpRequest.setPassword("password");
@@ -161,15 +154,12 @@ public class SignUpTest {
         .andExpect(status().isBadRequest())
         .andExpect(
             jsonPath("$.errors")
-                .value(
-                    org.hamcrest.Matchers.not("Password must be within 8 and 250 characters long")))
+                .value(org.hamcrest.Matchers.not("Password must be within 8 and 250 characters long")))
         .andReturn();
   }
 
   @Test
-  void
-      password_should_contain_at_least_1_lower_case_and_uppercase_char_and_number_and_special_char()
-          throws Exception {
+  void password_should_contain_at_least_1_lower_case_and_uppercase_char_and_number_and_special_char() throws Exception {
     SignUpRequest signUpRequest = new SignUpRequest();
     signUpRequest.setPassword("password");
     String requestBody = objectMapper.writeValueAsString(signUpRequest);

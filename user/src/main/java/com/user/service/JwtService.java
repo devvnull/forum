@@ -1,6 +1,8 @@
 package com.user.service;
 
+import com.user.entity.User;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -10,6 +12,8 @@ import java.util.Map;
 import java.util.function.Function;
 import javax.crypto.SecretKey;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -24,13 +28,14 @@ public class JwtService {
   @Value("${jwt.refresh_token_expiration}")
   private String refreshTokenExpiration;
 
-  private String generateToken(String username, int expiration) {
+  private String generateToken(User user, int expiration) {
     Map<String, Object> claims = new HashMap<>();
+    claims.put("userId", user.getId().toString());
 
     return Jwts.builder()
         .claims()
         .add(claims)
-        .subject(username)
+        .subject(user.getUsername())
         .issuedAt(new Date(System.currentTimeMillis()))
         .expiration(new Date(System.currentTimeMillis() + expiration))
         .and()
@@ -38,17 +43,26 @@ public class JwtService {
         .compact();
   }
 
-  public String generateAccessToken(String username) {
-    return generateToken(username, Integer.parseInt(accessTokenExpiration));
+  public String generateAccessToken(User user) {
+    return generateToken(user, Integer.parseInt(accessTokenExpiration));
   }
 
-  public String generateRefreshToken(String username) {
-    return generateToken(username, Integer.parseInt(refreshTokenExpiration));
+  public String extractUserId(String token) {
+    return extractClaim(token, claims -> claims.get("userId", String.class));
+  }
+
+  public String generateRefreshToken(User user) {
+    return generateToken(user, Integer.parseInt(refreshTokenExpiration));
   }
 
   private SecretKey getKey() {
     byte[] keyBytes = Decoders.BASE64.decode(secret);
     return Keys.hmacShaKeyFor(keyBytes);
+  }
+
+  public User getAuthUser() {
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    return (User) authentication.getPrincipal();
   }
 
   public String extractUsername(String token) {
@@ -66,7 +80,11 @@ public class JwtService {
   }
 
   private Claims extractAllClaims(String token) {
-    return Jwts.parser().verifyWith(getKey()).build().parseSignedClaims(token).getPayload();
+    try {
+      return Jwts.parser().verifyWith(getKey()).build().parseSignedClaims(token).getPayload();
+    } catch (ExpiredJwtException ex) {
+      throw ex;
+    }
   }
 
   public boolean validateToken(String token, UserDetails userDetails) {

@@ -4,13 +4,20 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
+import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "users")
 public class User implements UserDetails {
@@ -39,6 +46,14 @@ public class User implements UserDetails {
   @Column(name = "updated_at")
   private LocalDateTime updatedAt;
 
+  @OneToMany(mappedBy = "follower", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<Follower> followers;
+
+  @OneToMany(mappedBy = "influencer", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<Follower> influencers;
+
+  public User() {}
+
   public User(String username, String firstName, String lastName, String password) {
     this.username = username;
     this.firstName = firstName;
@@ -46,18 +61,8 @@ public class User implements UserDetails {
     this.password = password;
   }
 
-  public User() {}
-
   public UUID getId() {
     return id;
-  }
-
-  public String getUsername() {
-    return username;
-  }
-
-  public String getPassword() {
-    return password;
   }
 
   public String getFirstName() {
@@ -68,12 +73,14 @@ public class User implements UserDetails {
     return lastName;
   }
 
-  public LocalDateTime getCreatedAt() {
-    return createdAt;
+  @Override
+  public String getUsername() {
+    return username;
   }
 
-  public LocalDateTime getUpdatedAt() {
-    return updatedAt;
+  @Override
+  public String getPassword() {
+    return password;
   }
 
   @Override

@@ -28,7 +28,7 @@ public class AuthController {
       throw new RuntimeException("Invalid username or password");
     }
 
-    String token = userService.verify(request.getUsername(), request.getPassword());
+    String token = userService.verify(user, request.getPassword());
 
     Map<String, String> response = new HashMap<>();
     response.put("token", token);
