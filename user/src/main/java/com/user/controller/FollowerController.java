@@ -10,16 +10,25 @@ import com.user.service.UserService;
 import jakarta.validation.Valid;
 import java.util.Optional;
 import java.util.UUID;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api")
 public class FollowerController {
-  @Autowired private FollowerService followerService;
-  @Autowired private UserService userService;
-  @Autowired private JwtService jwtService;
+  private final FollowerService followerService;
+  private final UserService userService;
+  private final JwtService jwtService;
+
+  public FollowerController(
+      FollowerService followerService, UserService userService, JwtService jwtService) {
+    this.followerService = followerService;
+    this.userService = userService;
+    this.jwtService = jwtService;
+  }
 
   @PostMapping("/follow")
   public ResponseEntity<Void> follow(@Valid @RequestBody FollowRequest request) {

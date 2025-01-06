@@ -10,7 +10,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -23,10 +22,14 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 @Component
 public class JwtFilter extends OncePerRequestFilter {
+  private final ApplicationContext context;
 
-  @Autowired private JwtService jwtService;
+  private final JwtService jwtService;
 
-  @Autowired ApplicationContext context;
+  public JwtFilter(ApplicationContext context, JwtService jwtService) {
+    this.context = context;
+    this.jwtService = jwtService;
+  }
 
   @Override
   protected void doFilterInternal(
@@ -41,7 +44,7 @@ public class JwtFilter extends OncePerRequestFilter {
       try {
         username = jwtService.extractUsername(token);
       } catch (Exception e) {
-        handleException(response, e);
+        handleException(response);
         // log
         return;
       }
@@ -62,7 +65,7 @@ public class JwtFilter extends OncePerRequestFilter {
     filterChain.doFilter(request, response);
   }
 
-  private void handleException(HttpServletResponse response, Exception ex) throws IOException {
+  private void handleException(HttpServletResponse response) throws IOException {
     response.setStatus(HttpStatus.UNAUTHORIZED.value());
     response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 

@@ -54,3 +54,5 @@ logs/
 *.jar
 *.war
 *.ear
+
+.scannerwork/

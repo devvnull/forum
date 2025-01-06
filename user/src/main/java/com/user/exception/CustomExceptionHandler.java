@@ -1,9 +1,9 @@
 package com.user.exception;
 
+import com.user.response.error.ServerErrorResponse;
+import com.user.response.error.ValidationErrorResponse;
 import java.util.Arrays;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
@@ -21,19 +21,14 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
   @ExceptionHandler(ValidationException.class)
   public ResponseEntity<Object> handleValidationException(ValidationException ex) {
-    Map<String, Object> body = new LinkedHashMap<>();
-    body.put("message", "Validation failed");
-    body.put("errors", Arrays.asList(ex.getMessage()));
-
-    return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
+    ValidationErrorResponse response = new ValidationErrorResponse(Arrays.asList(ex.getMessage()));
+    return new ResponseEntity<>(response.body(), HttpStatus.BAD_REQUEST);
   }
 
   @ExceptionHandler(InternalServerException.class)
-  public ResponseEntity<Object> handleValidationException(InternalServerException ex) {
-    Map<String, Object> body = new LinkedHashMap<>();
-    body.put("message", "Something went wrong, please try again");
-
-    return new ResponseEntity<>(body, HttpStatus.INTERNAL_SERVER_ERROR);
+  public ResponseEntity<Object> handleValidationException() {
+    ServerErrorResponse response = new ServerErrorResponse();
+    return new ResponseEntity<>(response.body(), HttpStatus.INTERNAL_SERVER_ERROR);
   }
 
   @Override
@@ -42,9 +37,6 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
       HttpHeaders headers,
       HttpStatusCode status,
       WebRequest request) {
-
-    Map<String, Object> body = new LinkedHashMap<>();
-    body.put("message", "Validation failed");
 
     List<String> fieldErrors =
         ex.getBindingResult().getFieldErrors().stream()
@@ -59,8 +51,9 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
     List<String> allErrors =
         Stream.concat(fieldErrors.stream(), globalErrors.stream()).collect(Collectors.toList());
 
-    body.put("errors", allErrors);
+    ValidationErrorResponse response = new ValidationErrorResponse();
+    response.addErrors(allErrors);
 
-    return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
+    return new ResponseEntity<>(response.body(), HttpStatus.BAD_REQUEST);
   }
 }
