@@ -18,6 +18,7 @@ The format is based on [Semantic Versioning](https://semver.org/).
 ## [0.0.0] - 2024-00-00
 
 ### Added
+- feat(service-discovery): Installed `Consul` service discovery client. 
 - feat(seeder): Added seeders to populate users and followers tables. 
 - feat(followers): Added endpoints to follow and unfollow user and related logic.
 - feat(code-style): Added `spotless` plugin for code formatting.

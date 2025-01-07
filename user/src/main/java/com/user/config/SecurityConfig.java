@@ -20,7 +20,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class SecurityConfig {
   private static final String[] publicEndpoints = {
-    "/api/login", "/api/signup", "/swagger-ui/**", "/api-docs/**"
+    "/api/login", "/api/signup", "/swagger-ui/**", "/api-docs/**", "/actuator/health"
   };
 
   @Autowired private UserDetailsService userDetailsService;
