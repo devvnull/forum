@@ -24,3 +24,6 @@ The format is based on [Semantic Versioning](https://semver.org/).
 - feat(code-style): Added `spotless` plugin for code formatting.
 - feat(auth): Added login endpoint.
 - feat(auth): Added create user endpoint.
+
+### Changed
+- refactor(core): Changed code structure to hexagonal style.

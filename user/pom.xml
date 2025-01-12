@@ -8,7 +8,7 @@
 		<version>3.4.0</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.user</groupId>
+	<groupId>user</groupId>
 	<artifactId>user</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>user</name>
@@ -118,6 +118,7 @@
 			<artifactId>lombok</artifactId>
 			<version>1.18.36</version>
 			<scope>provided</scope>
+			<type>jar</type>
 		</dependency>
 
 	</dependencies>
