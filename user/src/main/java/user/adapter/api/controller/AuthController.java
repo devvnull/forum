@@ -1,5 +1,9 @@
 package user.adapter.api.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.ValidationException;
 import java.util.Optional;
@@ -8,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import user.adapter.api.openapi.SwaggerBadRequest;
 import user.adapter.api.request.LoginRequest;
 import user.adapter.api.request.SignUpRequest;
 import user.adapter.api.response.AuthTokenResponse;
@@ -24,6 +29,13 @@ public class AuthController {
     this.userService = userService;
   }
 
+  @ApiResponse(
+      responseCode = "200",
+      content = @Content(schema = @Schema(implementation = AuthTokenResponse.class)))
+  @Operation(
+      summary = "Logs in user",
+      tags = {"Auth"})
+  @SwaggerBadRequest
   @PostMapping("/login")
   public ResponseEntity<AuthTokenResponse> login(@Valid @RequestBody LoginRequest request) {
     Optional<User> user = userService.findByUsername(request.getUsername());
@@ -36,6 +48,13 @@ public class AuthController {
     return ResponseEntity.ok(new AuthTokenResponse(token));
   }
 
+  @ApiResponse(
+      responseCode = "200",
+      content = @Content(schema = @Schema(implementation = UserResponse.class)))
+  @Operation(
+      summary = "Creates a new user",
+      tags = {"Auth"})
+  @SwaggerBadRequest
   @PostMapping("/signup")
   public ResponseEntity<UserResponse> signUp(@Valid @RequestBody SignUpRequest request) {
     User user =
