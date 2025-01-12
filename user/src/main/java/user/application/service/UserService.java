@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import user.adapter.security.JwtService;
 import user.domain.model.User;
 import user.domain.port.UserRepositoryPort;
+import user.domain.port.messaging.UserEventsPort;
 
 @Service
 public class UserService {
@@ -17,22 +18,29 @@ public class UserService {
   private final AuthenticationManager authManager;
   private final UserRepositoryPort userRepositoryPort;
   private final PasswordEncoder passwordEncoder;
+  private final UserEventsPort userEventsPort;
 
   public UserService(
       JwtService jwtService,
       AuthenticationManager authManager,
       UserRepositoryPort userRepositoryPort,
-      PasswordEncoder passwordEncoder) {
+      PasswordEncoder passwordEncoder,
+      UserEventsPort userEventsPort) {
     this.jwtService = jwtService;
     this.authManager = authManager;
     this.userRepositoryPort = userRepositoryPort;
     this.passwordEncoder = passwordEncoder;
+    this.userEventsPort = userEventsPort;
   }
 
   public User create(String username, String firstName, String lastName, String password) {
     String hashedPassword = passwordEncoder.encode(password);
-    User user = new User(null, username, firstName, lastName, hashedPassword, null, null);
-    return userRepositoryPort.save(user);
+    User user =
+        userRepositoryPort.save(
+            new User(null, username, firstName, lastName, hashedPassword, null, null));
+    userEventsPort.publishUserCreatedEvent(user);
+
+    return user;
   }
 
   public Optional<User> findByUsername(String username) {

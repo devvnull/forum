@@ -18,3 +18,17 @@ spring.jpa.properties.hibernate.format_sql=true
 jwt.secret=your_secret_key
 jwt.expiration=3600000
 jwt.refresh_token_expiration=604800000
+
+# Consul Configuration
+spring.cloud.consul.host=localhost
+spring.cloud.consul.port=8500
+spring.cloud.consul.discovery.register=true
+spring.cloud.consul.discovery.health-check-path=/actuator/health
+spring.cloud.consul.discovery.health-check-interval=10s
+
+# Management Endpoints Configuration
+management.endpoints.web.exposure.include=health,info
+
+springdoc.api-docs.path=/api-docs
+
+nats.server=nats://localhost:4222

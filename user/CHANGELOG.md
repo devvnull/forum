@@ -18,6 +18,7 @@ The format is based on [Semantic Versioning](https://semver.org/).
 ## [0.0.0] - 2024-00-00
 
 ### Added
+- feat(nats): Adder nats client as message broker.
 - feat(swagger): Adder swagger plugin and related annotations.
 - feat(service-discovery): Installed `Consul` service discovery client. 
 - feat(seeder): Added seeders to populate users and followers tables. 
