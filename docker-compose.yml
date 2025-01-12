@@ -1,0 +1,16 @@
+services:
+
+  nats:
+    image: nats:2.10-alpine
+    container_name: nats-server
+    ports:
+      - "4222:4222"
+      - "8222:8222"
+    command: -js
+
+  consul:
+    image: consul:1.15
+    container_name: consul
+    command: agent -server -ui -bootstrap-expect=1 -client=0.0.0.0
+    ports:
+      - "8500:8500"
